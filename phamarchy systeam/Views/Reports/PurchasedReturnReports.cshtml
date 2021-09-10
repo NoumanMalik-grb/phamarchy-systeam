@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "PurchasedReturnReports";
+    Layout = "~/Views/Shared/_Layout - admin.cshtml";
+}
+
+<h2>PurchasedReturnReports</h2>
+<table class="table table-bordered">
+@using (Html.BeginForm("PurchasedReturnReport", "Reports", FormMethod.Post))
+  {
+        <tr>
+            <td>DateFrom</td>
+            <td>
+                <input type="datetime-local"name="DateFrom" value="@ViewBag.DateFrom" />
+            </td>
+        </tr> 
+   }
+</table>

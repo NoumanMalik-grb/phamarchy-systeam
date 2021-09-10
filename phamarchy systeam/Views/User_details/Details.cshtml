@@ -1,0 +1,83 @@
+﻿@model phamarchy_systeam.Models.User_details
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>User_details</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.User_name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User_name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User_email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User_email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User_password)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User_password)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User_type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User_type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User_working_time)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User_working_time)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User_phone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User_phone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User_adress)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User_adress)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.User_salary)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.User_salary)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.User_id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

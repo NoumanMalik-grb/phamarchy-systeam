@@ -1,0 +1,64 @@
+﻿@model IEnumerable<phamarchy_systeam.Models.Phamarcy_adress>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Company_name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Company_adress)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Company_Phone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Company_emails)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Company_licinces)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Company_logo)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Company_name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Company_adress)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Company_Phone)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Company_emails)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Company_licinces)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Company_logo)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Company_id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Company_id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Company_id })
+        </td>
+    </tr>
+}
+
+</table>

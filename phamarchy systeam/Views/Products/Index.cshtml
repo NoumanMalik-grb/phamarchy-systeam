@@ -1,0 +1,73 @@
+﻿@model IEnumerable<phamarchy_systeam.Models.Product>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+<br />
+<br />
+<br />
+<center>
+    <a class="btn btn-primary" href="@Url.Action("Create","Products")">Add new product</a>
+</center>
+   
+<br />
+<br />
+
+<table class="table table-active  table-responsive" >
+    <tr>
+        <th>
+            Product type
+        </th>
+
+        <th>
+            Name
+        </th>
+        <th>
+            Sale price
+        </th>
+        
+
+
+        <th>
+            Product status
+        </th>
+        
+
+
+        <th style="text-align:center">Action</th>
+    </tr>
+
+@foreach (var item in Model) {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Category.Category_name)
+    </td>
+
+    <td>
+        @Html.DisplayFor(modelItem => item.Product_name)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Product_Sale_price)
+    </td>
+    
+
+    
+    <td>
+        @Html.DisplayFor(modelItem => item.Product_status)
+    </td>
+   
+    <td>
+        <a  class="btn btn-success fa fa-edit" href="@Url.Action("Edit","Products" ,  new { id = item.Product_id })">Edit</a>
+        <a  class="btn btn-secondary fa fa-bookmark" href="@Url.Action("Details","Products" ,  new { id = item.Product_id })">Details</a>
+        <a  class="btn btn-danger fa fa-trash-alt" href="@Url.Action("Delete","Products" ,  new { id = item.Product_id })">Delete</a>
+
+
+        
+    </td>
+</tr>
+}
+
+</table>

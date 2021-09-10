@@ -1,0 +1,137 @@
+﻿@using phamarchy_systeam.Models
+@{
+    ViewBag.Title = "ReturnInvoice";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Model1 db = new Model1();
+    int fid = (int)Session["id"];
+    int? s = ViewBag.s;
+    int totalquantity = 0;
+    decimal totalamount = 0;
+}
+
+
+<h2>ReturnInvoice</h2>
+@*@if (TempData["message"] !=null)
+{
+<h2>
+    @TempData["message"]
+</h2>
+}*@
+
+<table class="table table-bordered">
+    <thead>
+        <tr style="text-align:center">Order Detail</tr>
+        <tr>
+            <th>Order_Id</th>
+            <th>Name</th>
+            <th>Seller Address</th>
+            <th>Seller Name</th>
+            <th> Seller Cell No</th>
+            <th>Type</th>
+            <th>Delivery Status</th>
+            <th>Date time</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in db.Orders.Where(x => x.Order_id == fid))
+        {
+
+
+            <tr>
+                <td>@item.Order_id</td>
+                <td>@item.User_name</td>
+                @if (item.User_fid != null)
+                {
+                    <td>@item.User_details.User_adress</td>
+                    <td>@item.User_details.User_name</td>
+                    <td>@item.User_details.User_phone</td>
+}
+                <td>@item.Order_Type</td>
+                <td>@item.Order_status</td>
+                <td>@item.Order_date_time</td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+<!-- Button trigger modal -->
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th style="text-align:center" colspan="4">Product details</th>
+        </tr>
+        <tr>
+            <th>Product Sale Price</th>
+            <th>Quantity</th>
+            <th>Product Amount</th>
+            <th>Product Name</th>
+            <th>Return type</th>
+
+
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in db.Order_details.Where(x => x.Order_fid == fid))
+        {
+            <tr>
+                <td>
+                    @if (item.Order.Order_Type == "Sale")
+                    {
+                        @item.Product_sale_price;
+                    }
+                    else
+                    {
+                        @item.Product_purchase_price;
+                    }
+                </td>
+                <td>@Math.Abs(Convert.ToInt32(item.Product_qlty))</td>
+                <td>
+                    @if (item.Order.Order_Type == "Purchased")
+                    {
+                        @(decimal.Parse(item.Product_purchase_price.ToString())*Math.Abs(int.Parse(item.Product_qlty.ToString())));
+                    }
+                    else
+                    {
+                        @(decimal.Parse(item.Product_sale_price.ToString())*Math.Abs(int.Parse(item.Product_qlty.ToString())));
+                    }
+                </td>
+                <td>@item.Product.Product_name</td>
+
+                <td>
+                    <form action="/Home/AddTocart" method="post">
+
+                        <input type="text" name="quantity" />
+                        <input type="text" name="id" value="@item.Product.Product_id" style="visibility:hidden" />
+                        <input type="text" name="Detail_id" value="@item.Od_id" style="visibility:hidden" />
+                        <input type="submit" />
+                    </form>
+                </td>
+                <td></td>
+
+
+            </tr>
+            totalquantity += Math.Abs(int.Parse(item.Product_qlty.ToString()));
+            if (item.Order.Order_Type == "Purchased")
+            {
+                totalamount += (decimal.Parse(item.Product_purchase_price.ToString()) * Math.Abs(int.Parse(item.Product_qlty.ToString())));
+            }
+            else
+            {
+                totalamount += (decimal.Parse(item.Product_sale_price.ToString()) * Math.Abs(int.Parse(item.Product_qlty.ToString())));
+            }
+        }
+        <tr>
+            <td>Total Quantity</td>
+            <td>@totalquantity</td>
+            <td> Total Amount</td>
+            <td>@totalamount</td>
+        </tr>
+    </tbody>
+</table>
+<br/>
+
+
+
+    
+

@@ -1,0 +1,77 @@
+﻿@using phamarchy_systeam.Models
+@{
+    ViewBag.Title = "SaleReturnCart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int Row = 0;
+    int  TotallQuantity = 0;
+    decimal TotallBill = 0;
+    int fid = (int)Session["id"];
+    Model1 db = new Model1();
+    Order o = db.Orders.FirstOrDefault();
+
+}
+
+<h2>SaleReturnCart</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Sale Price</th>
+            <th>Quantity</th>
+            <th>Total Bill</th>
+            <th>Remove</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Session["ReturnProduct"] != null)
+        {
+            List<Product> p = (List<Product>)Session["ReturnProduct"];
+            foreach (var item1 in p)
+            {
+                <tr>
+                    <td>@item1.Product_name</td>
+                    <td>@item1.Product_Sale_price</td>
+                    <td>
+                        <div>
+                            <a href="@Url.Action("RMinus", "Home", new { RowNo = Row })" class="btn-danger btn-sm fa fa-minus"></a>
+                            <b>@item1.quantity</b>
+                            <a href="@Url.Action("Rplus", "Home", new { RowNo = Row }) " class="btn-danger btn-sm fa fa-plus"></a>
+                        </div>
+                    </td>
+
+                    <td>
+                        <div>
+                            @(decimal.Parse(item1.Product_Sale_price.ToString())*int.Parse(item1.quantity.ToString()));
+                        </div>
+                    </td>
+                    <td>
+                        <a href="@Url.Action("SRemove", "Home", new { RowNo = Row })" class="fa fa-remove"></a>
+                    </td>
+
+                </tr>
+                Row++;
+                TotallQuantity += item1.quantity;
+                TotallBill += Convert.ToDecimal(item1.quantity) * Convert.ToDecimal(item1.Product_Sale_price);
+            }
+          
+            }
+        
+
+    </tbody>
+    <tfooter>
+        <tr>
+            <td>totalqty</td>
+            <td>  @TotallQuantity</td>
+            <td>totalbill</td>
+            <td>  @TotallBill</td>
+           
+            <td>
+                <a href="@Url.Action("SaleReturn","Home")" class="btn btn-danger  btn-group-lg">Return</a>
+                <a href="@Url.Action("Returnpayno","Home")" class="btn btn-danger  btn-group-lg">Submit</a>
+            </td>
+        </tr>
+       
+    </tfooter>
+</table>
+
+

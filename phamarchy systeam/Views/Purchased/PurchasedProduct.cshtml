@@ -1,0 +1,269 @@
+﻿
+@using phamarchy_systeam.Models
+
+@{
+    Layout = "~/Views/Shared/_Layout - admin.cshtml";
+    Model1 db = new Model1();
+
+    var pro = db.Products.ToList();
+    var co = db.Phamarcy_adress.FirstOrDefault();
+    int row = 0;
+    int id = 0;
+    int totalqty = 0;
+    decimal totalbill = 0;
+
+}
+
+<head>
+    <link href="~/Content/modal.css" rel="stylesheet" />
+    <style>
+        tr:hover {
+            cursor: pointer;
+        }
+
+        table.dataTable th.focus,
+        table.dataTable td.focus {
+            outline: none !important;
+        }
+    </style>
+</head>
+
+<div id="divEmp">
+
+
+    @if (Session["product"] != null)
+    {
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>item name</th>
+                    <th>Price</th>
+                    <th>QTY</th>
+                    <th>Total</th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in (List<Product>)Session["product"])
+                {
+                    <tr>
+                        <td>@item.Product_name</td>
+                        <td>@item.Product_Sale_price</td>
+                        <td>
+                            <a href="@Url.Action("Minus","Purchased", new { RowNo=row})" class=" btn-danger  fa fa-minus btn-sm"></a>
+                            <b>@item.quantity</b>
+                            <a href="@Url.Action("plus","Purchased", new { RowNo=row})" class=" btn-danger fa fa-plus btn-sm"></a>
+                        </td>
+                        <td>@(decimal.Parse(item.Product_Sale_price.ToString()) * int.Parse(item.quantity.ToString()))</td>
+
+                    </tr>
+                    row++;
+                    totalqty += item.quantity;
+                    totalbill += Convert.ToDecimal(item.quantity) * Convert.ToDecimal(item.Product_Sale_price);
+                }
+
+                @*<tr>
+                        <td><input type="text" id="pay"/></td>
+                    </tr>*@
+
+
+            </tbody>
+            <tfooter>
+                <tr>
+                    <td>totalqty</td>
+                    <td>  @totalqty</td>
+                    <td>totalbill</td>
+
+
+                    <td>  @totalbill</td>
+
+                </tr>
+
+            </tfooter>
+
+        </table>
+        using (Html.BeginForm("payno", "Purchased", FormMethod.Post))
+        {
+            <div class="form-group col-sm-12">
+                <input type="text" name="User_name" class="form-control " required />
+                <br />
+
+            </div>
+            <div class="form-group">
+                Supplier Name
+                <div class="col-md-10">
+                    @Html.DropDownList("Supplier_fid", null, htmlAttributes: new { @class = "form-control" })
+
+                </div>
+            </div>
+            <input type="submit" value="Purchased Now" class="btn btn-block" />
+        }
+    }
+
+
+    <button id="myBtn" class=" btn btn-primary" style="display:none">Open Modal</button>
+    <a href="@Url.Action("PurchasedReturn","Purchased")" class="btn btn-block" style="color:brown; font-size:20px; text-align:right; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif">Return</a>
+    <label>Seach Here</label>
+    <input onkeydown="myFunction(event)" autofocus placeholder="Type For search Medicine" style="border-radius:20px" id="myInputTextField" class="form-control" />
+    <br />
+    <div class="custList">
+        <table id="mytable" class="display table table-bordered " style="width:100%">
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Product name</th>
+                    <th>sale price</th>
+                    <th>expery date</th>
+                    <th>packing size</th>
+                    <th>category name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in pro)
+                {
+                    id = item.Product_id;
+
+                    <tr id="select" @*onclick="location.href='@Url.Action("Create", "User")'"*@>
+                        <td>@item.Product_id</td>
+                        <td>@item.Product_name</td>
+                        <td>@item.Product_Sale_price</td>
+                        <td>@item.Product_Exp_date</td>
+
+                        <td>@item.Product_packing_siza</td>
+                        <td>@item.Category.Category_name</td>
+                        <td><button id="click" onclick="location.href='@Url.Action("addtocart", "Purchased",new{id=item.Product_id})'">ADD</button></td>
+                    </tr>
+
+                }
+            </tbody>
+
+        </table>
+    </div>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img id="loader" src="~/Content/loader.gif" style="display:none; height:20px;width:10px" />
+            <p><b>Details:</b> <span id="mytable-console">N/A</span></p>
+            @using (Ajax.BeginForm("PurchasedProduct", "Purchased", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "divEmp", InsertionMode = InsertionMode.Replace, OnSuccess = "modal_remove", OnComplete = "modal_remove", LoadingElementId = "loader" }, new { @id = "myForm" }))
+            {
+
+                <input type="text" name="id" class="form-control" id="textareaID" />
+
+                <input type="text" name="quantity" onkeydown="myFunction(event)" class="form-control" id="quan" />
+
+            }
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+    <script src="~/Scripts/dataTables.keyTable.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Content/modalscript.js"></script>
+    <script>
+        function modal_remove() {
+            modal.style.display = "none";
+        }
+    </script>
+    <script>
+        var data;
+        $(document).ready(function () {
+
+                // Select highlighted row
+
+            var table = $('#mytable').DataTable({
+
+                keys: {
+                    keys: [13 /* ENTER */, 38 /* UP */, 40 /* DOWN */, 37 /* left */]
+                }
+
+            }
+
+
+            );
+            $('#myInputTextField').keyup(function () {
+                table.search($(this).val()).draw();
+})
+
+            $('#mytable_filter').hide();
+
+
+
+            //$('.input-sm').onkeydown = function(e) {
+            //    //if (key === 40) {
+            //    //    $(table.row(cell.index(0)).node()).addClass('selected');
+            //    //}'
+            //    Console.log(e);
+            //};
+
+            // Handle event when cell gains focus
+            $('#mytable').on('key-focus.dt', function (e, datatable, cell) {
+                // Select highlighted row
+                $(table.row(cell.index().row).node()).addClass('selected');
+            });
+
+            // Handle event when cell looses focus
+            $('#mytable').on('key-blur.dt', function (e, datatable, cell) {
+                // Deselect highlighted row
+                $(table.row(cell.index().row).node()).removeClass('selected');
+            });
+
+            // Handle key event that hasn't been handled by KeyTable
+            $('#mytable').on('key.dt', function (e, datatable, key, cell, originalEvent) {
+                // If ENTER key is pressed
+                if (key === 13) {
+                    //// Get highlighted row data
+                    data = table.row(cell.index().row).data();
+
+                    ////// FOR DEMONSTRATION ONLY
+                    $("#mytable-console").html(data.join(', '));
+                    var newdata = data.join(",")
+                    var splitted = newdata.split(',');
+                    var first_item = splitted.shift();
+
+                    $("#myBtn").click();
+                    $("#textareaID").val(first_item);
+                    $("#quan").focus();
+
+                    @*window.location.href = "@Url.Action("addtocart", "Home" )";*@
+                }
+            });
+        });
+    //     function submit() {
+    //      $("#myForm").submit();
+    //}
+    //    function myfunction(event) {
+    //        var x = event.key;
+    //        if (x == "Enter") {
+    //
+    //        }
+    //    }
+    </script>
+    <script>
+        function myFunction(event) {
+            var x = event.key;
+
+            //
+            if (x == "Enter") {
+                $("#myForm").submit();
+            }
+            //if (x == "ArrowDown") {
+
+
+            //    //$('#pay').focus();
+
+
+            //    //get <td> element values here!!??
+
+            //}
+
+        }
+    </script>
+</div>
+<!---print function code-->
+

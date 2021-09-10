@@ -1,0 +1,59 @@
+﻿@using phamarchy_systeam.Models
+@{
+    ViewBag.Title = "PurchaseddReturnAddToCart";
+    Layout = "~/Views/Shared/_Layout - admin.cshtml";
+    int totallQuantity = 0;
+    decimal totallbill = 0;
+    int Row=0;
+    
+}
+
+<h2>PurchaseddReturnAddToCart</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Sale Price</th>
+            <th>Quantity</th>
+            <th>Total Bill</th>
+            <th>Remove</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Session["PurcahsedReturnProduct"]!=null)
+        {
+            List<Product> p = (List<Product>)Session["PurcahsedReturnProduct"];
+            foreach (var a in p)
+            {
+                <tr>
+                    <td>@a.Product_name</td>
+                    <td>@a.Product_Sale_price</td>
+                    <td>
+                        <a href="@Url.Action("PurchasedMinus", "Purchased",new { RowNo=Row})" class="fa fa-minus btn-danger"></a>
+                        @a.quantity
+                        <a href="@Url.Action("PurchasedPlus", "Purchased", new { RowNo=Row})"  class="fa fa-plus btn-danger"></a>
+                    </td>
+                    <td>@(decimal.Parse(a.Product_Sale_price.ToString())*Math.Abs(int.Parse(a.quantity.ToString())))</td>
+                    <td>
+                        <a href="@Url.Action("PurchasedRemove","Purchased" ,new { RowNO=Row})" class="fa fa-remove btn-outline-danger"></a>
+                    </td>
+                </tr>
+                Row++;
+                totallQuantity += Math.Abs(a.quantity);
+                totallbill += Convert.ToDecimal(a.quantity) * Convert.ToDecimal(a.Product_Purchase_price);
+            }
+        }
+    </tbody>
+   <tfooter>
+      <tr>
+          <td>Totall Quantity</td>
+          <td>@totallQuantity</td>
+          <td>Totall Bill</td>
+          <td>@totallbill</td>
+         <td>
+             <a href="@Url.Action("PurchasedReturnPay","Purchased")">PayNow</a>
+         </td>
+      </tr>
+      
+   </tfooter>
+</table>

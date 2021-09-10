@@ -1,0 +1,67 @@
+﻿@model phamarchy_systeam.Models.Phamarcy_adress
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Phamarcy_adress</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Company_name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Company_name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Company_adress)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Company_adress)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Company_Phone)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Company_Phone)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Company_emails)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Company_emails)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Company_licinces)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Company_licinces)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Company_logo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Company_logo)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Company_id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

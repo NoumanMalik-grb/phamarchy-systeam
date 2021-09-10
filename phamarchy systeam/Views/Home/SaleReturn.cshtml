@@ -1,0 +1,46 @@
+﻿@using phamarchy_systeam.Models
+@{
+    ViewBag.Title = "SaleReturn";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    Model1 db = new Model1();
+    var or = db.Order_details.ToList();
+    int? s = ViewBag.s;
+}
+
+
+@using (Html.BeginForm("SaleReturn", "Home"))
+{
+
+    <input type="text" name="s" />
+    <input type="submit" value="search" />
+}
+<br />
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Od_id</th>
+            <th>Name</th>
+            <th>Daate time</th>
+            <th>Order Status</th>
+            <th>order type</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in db.Orders.Where(x => x.Order_id == s))
+        {
+            <tr>
+                <td>@item.Order_id</td>
+                <td>@item.User_name</td>
+                <td>@item.Order_date_time</td>
+                <td>@item.Order_status</td>
+                <td>@item.Order_Type</td>
+                <td><a href="@Url.Action("ReturnInvoice","Home", new { fid=item.Order_id})" class="btn btn-outline-primary">Invoice</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
+
+

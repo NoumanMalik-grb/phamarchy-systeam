@@ -1,0 +1,287 @@
+﻿@using phamarchy_systeam.Models
+
+@{
+
+    Model1 db = new Model1();
+
+    var pro = db.Products.ToList();
+
+    int row = 0;
+    int id = 0;
+    int totalqty = 0;
+    decimal totalbill = 0;
+
+}
+
+<head>
+    <link href="~/Content/modal.css" rel="stylesheet" />
+    <style>
+        tr:hover {
+            cursor: pointer;
+        }
+
+        table.dataTable th.focus,
+        table.dataTable td.focus {
+            outline: none !important;
+        }
+
+        .btn-text-left {
+            text-align: left;
+        }
+
+        .btn-text-right {
+            text-align: right;
+        }
+
+
+        .btn-text-center {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<div id="divEmp">
+    <div id="PrintArea">
+
+        @if (Session["product"] != null)
+        {
+
+            <table class="table table-bordered table-bordered table-condensed">
+                <thead>
+                    <tr style="font-family:Algerian; background-color:darkred;color:darkblue">
+                        <th>item name</th>
+                        <th>Price</th>
+                        <th>QTY</th>
+                        <th>Total</th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in (List<Product>)Session["product"])
+                    {
+                        <tr>
+                            <td>@item.Product_name</td>
+                            <td>@item.Product_Sale_price</td>
+                            <td>
+                                <a href="@Url.Action("Minus","Home", new { RowNo=row})" class=" btn-danger  fa fa-minus btn-sm"></a>
+                                <b>@item.quantity</b>
+                                <a href="@Url.Action("plus","Home", new { RowNo=row})" class=" btn-danger fa fa-plus btn-sm"></a>
+                            </td>
+                            <td>@(decimal.Parse(item.Product_Sale_price.ToString()) * int.Parse(item.quantity.ToString()))</td>
+
+                        </tr>
+                        row++;
+                        totalqty += item.quantity;
+                        totalbill += Convert.ToDecimal(item.quantity) * Convert.ToDecimal(item.Product_Sale_price);
+                    }
+
+
+
+                </tbody>
+                <tfooter>
+                    <tr>
+                        <td>totalqty</td>
+                        <td>  @totalqty</td>
+                        <td>totalbill</td>
+
+
+                        <td>  @totalbill</td>
+
+                    </tr>
+
+                </tfooter>
+
+            </table>
+            using (Html.BeginForm("payno", "Home", FormMethod.Post))
+            {
+                <div class="form-group">
+                    <input type="text" name="User_name" class="form-control" />
+                </div>
+                <input type="submit" value="print" onclick=" PrintFunction()" />
+            }
+        }
+    </div>
+
+    <button id="myBtn" class=" btn btn-primary" style="display:none">Open Modal</button>
+    <a href="@Url.Action("SaleReturn","Home")" class="btn btn-block" style="color:brown; font-size:20px; text-align:right; font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif">Return</a>
+    <label>Seach Here</label>
+    <input onkeydown="myFunction(event)" autofocus placeholder="Type For search Medicine" style="border-radius:20px" id="myInputTextField" class="form-control" />
+    <br />
+    <div class="custList">
+        <table id="mytable" class="display table table-bordered  table-condensed table-active table-responsive-lg table-responsive-md table-responsive-sm table-responsive-xl" style="width:100%">
+            <thead>
+                <tr style="font-family:'Times New Roman', Times, serif;  font-size:20px; border:double; background-color:cadetblue; color:aqua">
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Sale Price</th>
+                    <th>Expery Date</th>
+
+                    <th>Packing Size</th>
+                    <th>Category Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in pro)
+                {
+                    id = item.Product_id;
+
+
+                    <tr id="select" @*onclick="location.href='@Url.Action("Create", "User")'"*@ style="text-align:center; background-color:cadetblue; font-size:15px;font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; color:palegreen">
+                        <td>@item.Product_id</td>
+                        <td>@item.Product_name</td>
+                        <td>@item.Product_Sale_price</td>
+                        <td>@item.Product_Exp_date</td>
+
+                        <td>@item.Product_packing_siza</td>
+                        <td>@item.Category.Category_name</td>
+                        <td><button id="click" onclick="location.href='@Url.Action("addtocart", "home",new{id=item.Product_id})'">ADD</button></td>
+                    </tr>
+
+                }
+            </tbody>
+
+        </table>
+    </div>
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img id="loader" src="~/Content/loader.gif" style="display:none; height:20px;width:10px" />
+            <p><b>Details:</b> <span id="mytable-console">N/A</span></p>
+            @using (Ajax.BeginForm("about", "Home", new AjaxOptions { HttpMethod = "POST", UpdateTargetId = "divEmp", InsertionMode = InsertionMode.Replace, OnSuccess = "modal_remove", OnComplete = "modal_remove", LoadingElementId = "loader" }, new { @id = "myForm" }))
+            {
+
+                <input type="text" name="id" class="form-control" id="textareaID" />
+
+                <input type="text" name="quantity" onkeydown="myFunction(event)" class="form-control" id="quan" />
+
+            }
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/jquery.dataTables.min.js"></script>
+    <script src="~/Scripts/dataTables.bootstrap.min.js"></script>
+    <script src="~/Scripts/dataTables.keyTable.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Content/modalscript.js"></script>
+    <script>
+        function modal_remove() {
+            modal.style.display = "none";
+        }
+    </script>
+    <script>
+        var data;
+        $(document).ready(function () {
+
+                // Select highlighted row
+
+            var table = $('#mytable').DataTable({
+
+                keys: {
+                    keys: [13 /* ENTER */, 38 /* UP */, 40 /* DOWN */, 37 /* left */]
+                }
+
+            }
+
+
+            );
+            $('#myInputTextField').keyup(function () {
+                table.search($(this).val()).draw();
+})
+
+            $('#mytable_filter').hide();
+
+
+
+            //$('.input-sm').onkeydown = function(e) {
+            //    //if (key === 40) {
+            //    //    $(table.row(cell.index(0)).node()).addClass('selected');
+            //    //}'
+            //    Console.log(e);
+            //};
+
+            // Handle event when cell gains focus
+            $('#mytable').on('key-focus.dt', function (e, datatable, cell) {
+                // Select highlighted row
+                $(table.row(cell.index().row).node()).addClass('selected');
+            });
+
+            // Handle event when cell looses focus
+            $('#mytable').on('key-blur.dt', function (e, datatable, cell) {
+                // Deselect highlighted row
+                $(table.row(cell.index().row).node()).removeClass('selected');
+            });
+
+            // Handle key event that hasn't been handled by KeyTable
+            $('#mytable').on('key.dt', function (e, datatable, key, cell, originalEvent) {
+                // If ENTER key is pressed
+                if (key === 13) {
+                    //// Get highlighted row data
+                    data = table.row(cell.index().row).data();
+
+                    ////// FOR DEMONSTRATION ONLY
+                    $("#mytable-console").html(data.join(', '));
+                    var newdata = data.join(",")
+                    var splitted = newdata.split(',');
+                    var first_item = splitted.shift();
+
+                    $("#myBtn").click();
+                    $("#textareaID").val(first_item);
+                    $("#quan").focus();
+
+                    @*window.location.href = "@Url.Action("addtocart", "Home" )";*@
+                }
+            });
+        });
+    //     function submit() {
+    //      $("#myForm").submit();
+    //}
+    //    function myfunction(event) {
+    //        var x = event.key;
+    //        if (x == "Enter") {
+    //
+    //        }
+    //    }
+    </script>
+    <script>
+        function myFunction(event) {
+            var x = event.key;
+
+            //
+            if (x == "Enter") {
+                $("#myForm").submit();
+            }
+            //if (x == "ArrowDown") {
+
+
+            //    //$('#pay').focus();
+
+
+            //    //get <td> element values here!!??
+
+            //}
+
+        }
+    </script>
+</div>
+<!---print function code-->
+
+<script>
+    function PrintFunction() {
+        var print = document.getElementById('PrintArea');
+        var printWindow = window.open('', '', 'height=400, width=800');
+        printWindow.document.write('<html><head><title>DIV Contects</title>');
+        printWindow.document.write('</head><body>');
+        printWindow.document.write(print.innerHTML);
+        printWindow.document.write('</body></html>');
+        printWindow.document.close();
+        setTimeout(function () {
+            printWindow.print();
+        }, 500);
+
+        return false;
+    }
+</script>

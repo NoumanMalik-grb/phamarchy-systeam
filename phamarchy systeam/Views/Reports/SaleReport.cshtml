@@ -1,0 +1,69 @@
+﻿
+@model IEnumerable<phamarchy_systeam.Models.Order>
+
+@{
+    int sr = 0;
+    ViewBag.Title = "View";
+
+    Layout = "~/Views/Shared/_Layout - admin.cshtml";
+}
+<center>
+    <h2>Sale Report</h2>
+</center>
+@using (Html.BeginForm("SaleReport", "Reports", FormMethod.Post))
+{
+    <table width="100%" border="1">
+        <tr>
+
+            <td>Date From:</td>
+            <td><input name="DateFrom" type="datetime-local" value=@ViewBag.DateFrom class="form-control" /></td>
+
+            <td>Date To:</td>
+
+            <td><input name="DateTo" type="datetime-local" value=@ViewBag.DateTo class="form-control" /></td>
+
+
+        </tr>
+        <tr>
+            <td>category:</td>
+            <td> @Html.DropDownList("Category", null, "Salect category", htmlAttributes: new { @class = "form-control" })</td>
+            <td>Product:</td>
+            <td> @Html.DropDownList("Product", null, "Salect Poduct", htmlAttributes: new { @class = "form-control" })</td>
+
+        </tr>
+
+        <tr>
+            <td style="padding-top:10px" colspan="4"><button class="btn  btn-block" style="background-color:#ff6666; color:white">Generate Report</button></td>
+        </tr>
+    </table>
+}
+<br />
+<table border="1" class="table table-responsive table-hover">
+    <tr style="background-color:#ff6666; color:white">
+        <th>Sr #</th>
+        <th>Order ID</th>
+        <th>Order Date</th>
+        <th>Order Type</th>
+        <th> Name</th>
+        <th>status </th>
+      
+        <th>Invoice</th>
+    </tr>
+    @foreach (var o in Model)
+    {
+        sr++;
+<tr>
+    <td>@sr</td>
+    <td>Order-@o.Order_id</td>
+    <td>@DateTime.Parse(o.Order_date_time.ToString()).ToLongDateString()</td>
+    <td>@o.Order_Type</td>
+
+    <td>@o.User_name</td>
+
+    <td>@o.Order_status</td>
+
+
+    <td><a href="@Url.Action("Invoice","Reports", new { id=o.Order_id})" class="btn btn-outline-primary">Invoice</a></td>
+</tr>
+    }
+</table>

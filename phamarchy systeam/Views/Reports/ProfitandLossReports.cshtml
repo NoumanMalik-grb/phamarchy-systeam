@@ -1,0 +1,64 @@
+﻿@model IEnumerable<phamarchy_systeam.Models.Order>
+@{
+    ViewBag.Title = "ProfitandLossReports";
+    Layout = "~/Views/Shared/_Layout - admin.cshtml";
+    decimal? NetProfit = 0;
+}
+
+<table class="table table-bordered table-active table-condensed">
+    @Html.BeginForm("ProfitandLossReports", "Reports", FormMethod.Post)
+    {
+
+    <tr>
+        <td> Date From</td>
+        <td><input type="datetime-local" name="DateFrom" value="@ViewBag.DateFrom"/></td>
+        <td>Date To</td>
+        <td><input type="datetime-local" name="DateTo" value="@ViewBag.DateTo"/></td>
+        <td><input type="submit" name="Submit" value="Genrate Report" /></td>
+    </tr>
+    <tr>
+        <td>Category</td>
+        <td>@Html.DropDownList("Category", ViewBag.Category as SelectList, "Select category", htmlAttributes: new { @class = "form-control" })</td>
+        <td>Product</td>
+        <td>@Html.DropDownList("Product", ViewBag.product as SelectList, "Slect Product", htmlAttributes: new { @class = "form-control" })</td>
+        <td><input type="button" name="Genrate Reports" value="" /></td>
+    </tr>
+    }
+</table>
+<table class="table table-active table-bordered ">
+    <thead>
+       <tr>
+           <th>Order Id</th>
+           <th>Customer Name</th>
+           <th>Sale Price</th>
+           <th>Purchased Price</th>
+           <th>Gross Profit & loss</th>
+           <th>Date & Time</th>
+           <th>Action</th>
+       </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Order_id</td>
+                <td>@item.User_name</td>
+                <td>@item.Order_details.Sum(x=>x.Product_sale_price *Math.Abs(Convert.ToInt32(x.Product_qlty)))</td>
+                <td>@item.Order_details.Sum(y=>y.Product_purchase_price* Math.Abs(Convert.ToInt32(y.Product_qlty)))</td>
+                <td>@(item.Order_details.Sum(x=>x.Product_sale_price*Math.Abs(Convert.ToInt32(x.Product_qlty)))- item.Order_details.Sum(y=>y.Product_purchase_price * y.Product_qlty))</td>
+                <td>@DateTime.Parse(item.Order_date_time.ToString()).ToLongDateString()</td>
+                <td><a href="@Url.Action("Invoice","Reports", new { id=item.Order_id})" class="btn btn-outline-primary">Invoice</a></td>
+            </tr>
+            NetProfit += (item.Order_details.Sum(x => x.Product_sale_price * x.Product_purchase_price) - item.Order_details.Sum(y => y.Product_purchase_price * y.Product_qlty));
+
+        }
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>NetProfit</td>
+        <td>@NetProfit</td>
+        <td></td>
+    </tr>
+    </tbody>
+</table>

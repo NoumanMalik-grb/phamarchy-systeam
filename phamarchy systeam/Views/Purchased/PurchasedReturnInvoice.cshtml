@@ -1,0 +1,114 @@
+﻿@using phamarchy_systeam.Models
+@{
+    ViewBag.Title = "PurchasedReturnInvoice";
+    Layout = "~/Views/Shared/_Layout - admin.cshtml";
+    Model1 db = new Model1();
+    int PRid = (int)Session["PReturn"];
+    int totallquantity=0;
+    decimal totallamount = 0;
+
+}
+
+<h2>PurchasedReturnInvoice</h2>
+
+<table class="table table-bordered">
+    <tr>Order Detail</tr>
+    <tr>
+        <th>Order_Id</th>
+        <th>Name</th>
+        <th>Buyer Address</th>
+        <th>Buyer Name</th>
+        <th>Buyer Cell No</th>
+        <th>Type</th>
+        <th>Delivery Status</th>
+        <th>Date time</th>
+    </tr>
+    <tbody>
+        @foreach (var item in db.Orders.Where(X=>X.Order_id==PRid))
+        {
+        <tr>
+            <td>@item.Order_id</td>
+            <td>@item.User_name</td>
+            @if (item.User_fid != null)
+            {
+                <td>@item.User_details.User_adress</td>
+                <td>@item.User_details.User_name</td>
+                <td>@item.User_details.User_phone</td>
+            }
+            <td>@item.Order_Type</td>
+            <td>@item.Order_status</td>
+            <td>@item.Order_date_time</td>
+
+        </tr>
+        }
+    </tbody>
+</table>
+<br />
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>purchased Price</th>
+            <th>Quantity</th>
+            <th>Product Amount</th>
+            <th>product name</th>
+            <th>Return quantity</th>
+        </tr>
+    </thead>
+    <tbody>
+       @foreach (var item in db.Order_details.Where(x=>x.Order_fid==PRid))
+       {
+
+           <tr>
+               <td>
+               @if (item.Order.Order_Type== "Purchased")
+               {
+                   @item.Product_purchase_price
+               }
+               else
+               {
+                   @item.Product_sale_price
+               }
+                   </td>
+               <td>
+                   @Math.Abs(Convert.ToInt32(item.Product_qlty))
+               </td>
+               <td>
+                   @if (item.Order.Order_Type== "Purchased")
+                   {
+                       @(decimal.Parse(item.Product_purchase_price.ToString())*Math.Abs(int.Parse(item.Product_qlty.ToString())));
+                   }
+                   else
+                   {
+                       @(decimal.Parse(item.Product_sale_price.ToString())*Math.Abs(int.Parse(item.Product_qlty.ToString())));
+                   }
+               </td>
+               <td>
+                   @item.Product.Product_name
+               </td>
+               <td>
+                   <form action="/Purchased/PurchaseddReturnAddToCart" method="post">
+                       <input type="text" name="quantity" />
+                       <input type="text" name="id" value="@item.Product.Product_id" style="visibility:hidden" />
+                       <input type="text" name="Detail_id" value="@item.Od_id" style="visibility:hidden" />
+                       <input type="submit" />
+                   </form>
+               </td>
+           </tr>
+           totallquantity += Math.Abs(int.Parse(item.Product_qlty.ToString()));
+           if (item.Order.Order_Type=="Purchased")
+           {
+               totallamount += (decimal.Parse(item.Product_purchase_price.ToString()) * Math.Abs(int.Parse(item.Product_qlty.ToString())));
+           }
+           else
+           {
+               totallamount += (decimal.Parse(item.Product_sale_price.ToString()) * Math.Abs(int.Parse(item.Product_qlty.ToString())));
+           }
+       }
+        <tr>
+            <td>Totall Quantity</td>
+            <td>@totallquantity</td>
+            <td>Totall Amount</td>
+            <td>@totallamount</td>
+        </tr>
+    </tbody>
+</table>

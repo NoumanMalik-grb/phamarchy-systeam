@@ -1,0 +1,69 @@
+﻿@model IEnumerable<phamarchy_systeam.Models.Order>
+@{
+    ViewBag.Title = "PurchasedReports";
+    Layout = "~/Views/Shared/_Layout - admin.cshtml";
+}
+
+<h2>PurchasedReports</h2>
+<table class="table table-bordered">
+    @using (Html.BeginForm("PurchasedReports", "Reports", FormMethod.Post))
+    {
+        <tr>
+
+            <td>Date From:</td>
+            <td><input name="DateFrom" type="datetime-local" value=@ViewBag.DateFrom class="form-control" /></td>
+
+            <td>Date To:</td>
+
+            <td><input name="DateTo" type="datetime-local" value=@ViewBag.DateTo class="form-control" /></td>
+
+
+        </tr>
+        <tr>
+            <td>category:</td>
+            <td> @Html.DropDownList("Category", null, "Salect category", htmlAttributes: new { @class = "form-control" })</td>
+            <td>Product:</td>
+            <td> @Html.DropDownList("Product", null, "Salect Product", htmlAttributes: new { @class = "form-control" })</td>
+
+        </tr>
+
+        <tr>
+            <td style="padding-top:10px" colspan="4"><button class="btn  btn-block" style="background-color:#ff6666; color:white">Generate Report</button></td>
+        </tr>
+    }
+</table>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Order_Id</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Email</th>
+            <th>Cell No</th>
+            <th>type</th>
+            <th>Delivery Status</th>            
+            <th>Date Time</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var i in Model)
+        {
+        <tr>
+            <td>@i.Order_id</td>
+            <td>@i.User_name</td>
+            <td>@i.User_details.User_adress</td>
+            <td>@i.User_details.User_email</td>
+            <td>@i.User_details.User_phone</td>
+            <td>@i.Order_Type</td>
+            <td>@i.Order_status</td>
+            <td>@i.Order_date_time</td>
+            <td><a href="@Url.Action("Invoice","Reports", new { id=i.Order_id})" class="btn btn-outline-primary">Invoice</a></td>
+        </tr>
+
+        }
+       
+    </tbody>
+</table>
+
+ 

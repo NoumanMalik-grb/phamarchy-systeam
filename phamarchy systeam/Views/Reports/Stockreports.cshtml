@@ -1,0 +1,61 @@
+﻿@model  IEnumerable<phamarchy_systeam.Models.Product>
+@{
+    ViewBag.Title = "Stockreports";
+    Layout = "~/Views/Shared/_Layout - admin.cshtml";
+    int no = 0;
+}
+
+<h2>stockReports</h2>
+
+<table class="table table-bordered">
+    @Html.BeginForm("Stockreports", "Reports", FormMethod.Post)
+    {
+    <tr>
+        <td>Date From:</td>
+        <td><input type="datetime-local" readonly value="@ViewBag.Datefrom" name="Datefrom" class="form-control" /></td>
+        <td>Date To:</td>
+        <td><input type="datetime-local" value="@ViewBag.DateTo" name="DateTo" class="form-control" /></td>
+        <td><input type="submit" value="Genrate Report" class="btn-block" /></td>
+    </tr>
+    <tr>
+        <td>Category</td>
+        <td>@Html.DropDownList("Category", ViewBag.Category as SelectList, "Select category", htmlAttributes: new { @class = "form-control" })</td>
+        <td>Product</td>
+        <td>@Html.DropDownList("Product", ViewBag.Product as SelectList, "Select Product", htmlAttributes: new { @class = "form-control" })</td>
+        <td><input type="button" value="Print Reports" /></td>
+    </tr>
+    }
+
+
+</table>
+<div class="tabel table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Sr #</th>
+                <th>Product_name</th>
+                <th>Sale_price</th>
+                <th>Purchase_price</th>
+                <th>packing_siza</th>
+                <th>avaiable stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                no++;
+                <tr>
+
+                    <td>@no</td>
+                    <td>@item.Product_name</td>
+                    <td>@item.Product_Sale_price</td>
+                    <td>@item.Product_Purchase_price</td>
+                    <td>@item.Product_packing_siza</td>
+                    <td>@item.Order_details.Where(x => x.Order.Order_date_time <= Convert.ToDateTime(ViewBag.Dateto)).Sum(x => x.Product_qlty)</td>
+
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>

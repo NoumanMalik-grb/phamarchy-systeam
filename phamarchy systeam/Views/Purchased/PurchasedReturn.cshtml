@@ -1,0 +1,42 @@
+﻿@using phamarchy_systeam.Models
+@{
+    ViewBag.Title = "PurchasedReturn";
+    Layout = "~/Views/Shared/_Layout - admin.cshtml";
+    Model1 db = new Model1();
+    int? se = ViewBag.message;
+}
+
+<h2>PurchasedReturn</h2>
+@using (Html.BeginForm("PurchasedReturn", "Purchased"))
+{
+    <input type="text" name="se" />
+    <input type="submit" value="search" />
+}
+<br />
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Od_id</th>
+            <th>Name</th>
+            <th>Daate time</th>
+            <th>Order Status</th>
+            <th>order type</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (var item in db.Orders.Where(x => x.Order_id == se))
+        {
+            <tr>
+                <td>@item.Order_id</td>
+                <td>@item.User_name</td>
+                <td>@item.Order_date_time</td>
+                <td>@item.Order_status</td>
+                <td>@item.Order_Type</td>
+                <td><a href="@Url.Action("PurchasedReturnInvoice","Purchased", new { PRid=item.Order_id})" class="btn btn-outline-primary">Invoice</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+<br />
